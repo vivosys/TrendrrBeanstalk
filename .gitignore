@@ -5,3 +5,5 @@ build/*
 *.settings
 .classpath
 bin/*
+*.iws
+.idea/workspace.xml
