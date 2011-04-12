@@ -2,6 +2,9 @@
 
 <project name="Trendrr-Beanstalk-Client" default="jar" basedir=".">
 
+	<taskdef resource="aQute/bnd/ant/taskdef.properties"
+		classpath="lib/biz.aQute.bnd.jar"/>
+
 	<fileset id="lib" dir="lib">
 		<include name="*.jar" />
 	</fileset>
@@ -25,7 +28,7 @@
 	</target>
 	
 	<target name="jar" depends="compile">
-		<property name="version.num" value="1.00" />
+		<property name="version.num" value="1.0.0" />
 		<buildnumber file="build/build.num"/>
 		<tstamp>
 			<format property="TODAY" pattern="yyyy-MM-dd HH:mm:ss" />
@@ -36,35 +39,8 @@
 				<include name="**/*.class"/>
 			</fileset>
 		</copy>
-		<mkdir dir="build/jar/META-INF"/>
-		
-		<!-- Set up the class path.. Seems verbose, ehh? yeah, There should be a better way! -->  
-		<property name="jar-all" location="lib" />
-		<fileset id="jars" dir="${jar-all}">
-			<include name="*.jar" />
-		</fileset>
-		<path id="cp"> <fileset refid="jars" /> </path>
-		<pathconvert property="classpath" refid="cp"
-		                 pathsep=" " dirsep="/">
-		      <map from="${jar-all}" to="lib" />
-		</pathconvert>
-		
-		<!-- build the manifest -->
-		<manifest file="build/jar/META-INF/MANIFEST.MF">
-			<attribute name="Built-By" value="Dustin Norlander"/>
-			<attribute name="Implementation-Version" 
-			             value="${version.num}-b${build.number}"/>   
-			<attribute name="Built-Date" value="${TODAY}"/> 
-			<attribute name="Class-Path" value="${classpath}"/>
-		</manifest>
 
-		<jar destfile="build/trendrr-beanstalk.jar"
-			basedir="build/jar"
-			manifest="build/jar/META-INF/MANIFEST.MF"
-			>
-			<exclude name="*.jar" />
-			<include name="**/*"/>
-		</jar>
+		<bnd files="TrendrrBeanstalk.bnd" output="build/trendrr-beanstalk.jar" classpath="build/jar"/>
 	</target>
 	
 	<!-- This is for doing a production build of the jar and javadocs.  It expects to 
